@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Country</title>
+</head>
+<body>
+<header>
+    Commons Explorer
+</header>
+<article>
+    <h1>Country</h1>
+    <ul>
+        {% for legislature in legislatures %}
+        <li><a href="{{ legislature.url }}">{{ legislature.label }}</a></li>
+        {% endfor %}
+    </ul>
+</article>
+
+</body>
+</html>

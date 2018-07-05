@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Legislature</title>
+</head>
+<body>
+<header>
+    Commons Explorer
+</header>
+<article>
+    <h1>Legislature</h1>
+    <ul>
+        {% for term in legislature.terms %}
+        <li><a href="/term/{{ config.country_wikidata_id }}/{{ legislature.house_item_id }}/{{ term.term_item_id }}/{% if term.position_item_id %}{{ term.position_item_id }}{% else %}{{ legislature.position_item_id }}{% endif %}?languages={{ languages|join(",") }}">{{ term.comment }}</a></li>
+
+        {% endfor %}
+    </ul>
+</article>
+
+</body>
+</html>
