@@ -1,0 +1,7 @@
+<h1>Legislature</h1>
+<ul>
+    <% legislature.terms.each do |term| %>
+    <li><a href="/term/<%= config.country_wikidata_id %>/<%= legislature.house_item_id %>/<%= term.term_item_id %>/<%= term.position_item_id || legislature.position_item_id %>?languages=<%= config.languages.join(',') %>"><%= term.comment %></a></li>
+
+    <% end %>
+</ul>

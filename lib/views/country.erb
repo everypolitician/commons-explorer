@@ -1,0 +1,19 @@
+<h1>Country</h1>
+
+<section>
+  <h2>Executives</h2>
+  <ul>
+    <% executives.each do |executive| %>
+      <li><a href="<%= executive[:url] %>"><%= executive[:label] %></a></li>
+    <% end %>
+  </ul>
+</section>
+
+<section>
+  <h2>Legislatures</h2>
+  <ul>
+    <% legislatures.each do |legislature| %>
+      <li><a href="<%= legislature[:url] %>"><%= legislature[:label] %></a></li>
+    <% end %>
+  </ul>
+</section>
