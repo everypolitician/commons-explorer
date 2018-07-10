@@ -17,17 +17,9 @@ def query_wikidata(sparql_query, config)
   wikidata_results_parser.parse(results)
 end
 
-def config_for_country(wikidata_id)
-  sparql_query = <<~SPARQL
-    SELECT * WHERE {
-      wd:#{wikidata_id} wdt:P37/wdt:P424 ?language ;
-               rdfs:label ?label .
-      FILTER(LANG(?label) = 'en')
-    }
-  SPARQL
-  results = query_wikidata(sparql_query, Config.new(country_wikidata_id: wikidata_id, languages: []))
-  Config.new country_wikidata_id: wikidata_id,
-             languages: results.map { |row| row[:language].value }.uniq
+def config_for_country(name)
+  data = JSON.parse(RestClient.get("https://raw.githubusercontent.com/everypolitician/#{name}/master/config.json"), symbolize_names: true)
+  Config.new data
 end
 
 get '/' do
@@ -38,7 +30,7 @@ get '/' do
     if repo[:topics].include? 'commons-data'
       config = JSON.parse(RestClient.get("https://raw.githubusercontent.com/#{repo[:full_name]}/master/config.json"), symbolize_names: true)
       [{
-          url: "/country/#{config[:country_wikidata_id]}?languages=#{config[:languages].join(',')}",
+          url: "/country/#{repo[:name]}",
           label: repo[:full_name],
        }]
     else
@@ -49,17 +41,16 @@ get '/' do
 end
 
 get '/country/:country' do
-  #config = config_for_country params[:country]
-  config = Config.new country_wikidata_id: params['country'], languages: params['languages'].split(',')
+  config = config_for_country params[:country]
   executives = Executive.list(config).map do |executive|
     {
-        url: "/executive/#{params['country']}/#{executive.executive_item_id}?languages=#{config.languages.join(',')}&position_ids=#{executive.positions_item_ids.join(',')}",
+        url: "/executive/#{params['country']}/#{executive.executive_item_id}&position_ids=#{executive.positions_item_ids.join(',')}",
         label: executive.comment,
     }
   end
   legislatures = Legislature.list(config).map do |legislature|
     {
-        url: "/legislature/#{params['country']}/#{legislature.house_item_id}/#{legislature.position_item_id}?languages=#{config.languages.join(',')}",
+        url: "/legislature/#{params['country']}/#{legislature.house_item_id}/#{legislature.position_item_id}",
         label: legislature.comment,
     }
   end
@@ -70,7 +61,7 @@ get '/country/:country' do
 end
 
 get '/legislature/:country/:legislature/:position' do
-  config = Config.new country_wikidata_id: params['country'], languages: params['languages'].split(',')
+  config = config_for_country params[:country]
   legislature_row = WikidataRow.new({legislature: {value: params['legislature']},
                                      legislaturePost: {value: params['position']}}, config.languages)
   term_rows = Legislature.terms_from_wikidata config, false, [legislature_row]
@@ -86,13 +77,14 @@ get '/legislature/:country/:legislature/:position' do
   end
   legislature = Legislature.new house_item_id: params['legislature'], terms: terms, position_item_id: params['position']
   erb :legislature, locals: {
+      'params' => params,
       'config' => config,
       'legislature' => legislature,
   }
 end
 
 get '/executive/:country/:executive' do
-  config = Config.new country_wikidata_id: params['country'], languages: params['languages'].split(',')
+  config = config_for_country params[:country]
   executive = Executive.new executive_item_id: params['executive'], positions: params['position_ids'].split(',').map { |id| {position_item_id: id, branch: nil, comment: nil} }
   wikidata_client = WikidataClient.new
   wikidata_labels = WikidataLabels.new(config: config, wikidata_client: wikidata_client)
@@ -121,7 +113,7 @@ get '/executive/:country/:executive' do
 end
 
 get '/term/:country/:legislature/:term/:position' do
-  config = Config.new country_wikidata_id: params['country'], languages: params['languages'].split(',')
+  config = config_for_country params[:country]
 
   legislature = Legislature.new house_item_id: params['legislature'], terms: [], position_item_id: params['position']
   term = LegislativeTerm.new legislature: legislature, term_item_id: params['term'], position_item_id: params['position']
@@ -158,7 +150,6 @@ get '/term/:country/:legislature/:term/:position' do
       'organizations' => organizations,
       'memberships' => memberships,
       # 'areas' => areas,
-      'languages' => config.languages,
   }
 
 end
