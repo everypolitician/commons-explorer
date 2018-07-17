@@ -10,7 +10,7 @@ def query_wikidata(sparql_query, config)
   wikidata_results_parser = WikidataResultsParser.new(languages: config.languages)
   query = Query.new(
     sparql_query:  sparql_query,
-    output_dir_pn: Pathname.new(''),
+    output_dir_pn: Pathname.new('')
   )
   results = query.run(wikidata_client: wikidata_client,
                       save_query_used: false, save_query_results: false)
@@ -29,17 +29,19 @@ get '/' do
   data = JSON.parse(response, symbolize_names: true)
   countries = data.flat_map do |repo|
     if repo[:topics].include? 'commons-data'
-      config = JSON.parse(RestClient.get("https://raw.githubusercontent.com/#{repo[:full_name]}/master/config.json"),
-                          symbolize_names: true)
-      [{
-        url: "/country/#{repo[:name]}",
-        label: repo[:full_name],
-      }]
+      # config = JSON.parse(RestClient.get("https://raw.githubusercontent.com/#{repo[:full_name]}/master/config.json"),
+      #                     symbolize_names: true)
+      [
+        {
+          url:   "/country/#{repo[:name]}",
+          label: repo[:full_name],
+        },
+      ]
     else
       []
     end
   end
-  erb :index, locals: {'countries': countries}
+  erb :index, locals: { 'countries': countries }
 end
 
 get '/country/:country' do
@@ -64,8 +66,10 @@ end
 
 get '/legislature/:country/:legislature/:position' do
   config = config_for_country params[:country]
-  legislature_row = WikidataRow.new({legislature: {value: params['legislature']},
-                                     legislaturePost: {value: params['position']}}, config.languages)
+  legislature_row = WikidataRow.new({
+                                      legislature:     { value: params['legislature'] },
+                                      legislaturePost: { value: params['position'] },
+                                    }, config.languages)
   term_rows = Legislature.terms_from_wikidata config, false, [legislature_row]
   terms = term_rows.map do |term_row|
     term = {
@@ -101,8 +105,8 @@ get '/executive/:country/:executive' do
   # areas.values.each { |a| a['name'] = config.languages.map { |l| a['name'][:"lang:#{l}"] } }
 
   memberships = membership_data.memberships
-  memberships.each { |m| m[:person] = persons[m[:person_id] ] }
-  memberships.each { |m| m[:on_behalf_of] = organizations[m[:on_behalf_of_id] ] }
+  memberships.each { |m| m[:person] = persons[m[:person_id]] }
+  memberships.each { |m| m[:on_behalf_of] = organizations[m[:on_behalf_of_id]] }
   # memberships.each { |m| m['area'] = areas[m['area_id'] ] }
 
   erb :term, locals: {
@@ -124,8 +128,8 @@ get '/term/:country/:legislature/:term/:position' do
   wikidata_labels = WikidataLabels.new(config: config, wikidata_client: wikidata_client)
   wikidata_results_parser = WikidataResultsParser.new(languages: config.languages)
   query = Query.new(
-    sparql_query: term.query(config),
-    output_dir_pn: Pathname.new(''),
+    sparql_query:  term.query(config),
+    output_dir_pn: Pathname.new('')
   )
   results = query.run(wikidata_client: wikidata_client, save_query_used: false, save_query_results: false)
   membership_rows = wikidata_results_parser.parse(results)
@@ -139,8 +143,8 @@ get '/term/:country/:legislature/:term/:position' do
   # areas.values.each { |a| a['name'] = config.languages.map { |l| a['name'][:"lang:#{l}"] } }
 
   memberships = membership_data.memberships
-  memberships.each { |m| m[:person] = persons[m[:person_id] ] }
-  memberships.each { |m| m[:on_behalf_of] = organizations[m[:on_behalf_of_id] ] }
+  memberships.each { |m| m[:person] = persons[m[:person_id]] }
+  memberships.each { |m| m[:on_behalf_of] = organizations[m[:on_behalf_of_id]] }
   # memberships.each { |m| m['area'] = areas[m['area_id'] ] }
 
   puts JSON.dump(persons)
@@ -154,4 +158,3 @@ get '/term/:country/:legislature/:term/:position' do
     # areas: areas,
   }
 end
-
