@@ -1,0 +1,13 @@
+{
+  "name":"commons-explorer",
+  "scripts":{},
+  "env":{
+    "LANG":{
+      "required":true
+    },
+    "RACK_ENV":{
+      "required":true
+    }
+  },
+  "addons":[]
+}
