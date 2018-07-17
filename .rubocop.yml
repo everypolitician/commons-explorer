@@ -2,8 +2,8 @@ AllCops:
   Exclude:
     - 'Vagrantfile'
     - 'vendor/**/*'
-  TargetRubyVersion: 2.3
+  TargetRubyVersion: 2.4
 
-inherit_from: 
+inherit_from:
   - https://raw.githubusercontent.com/everypolitician/everypolitician-data/master/.rubocop_base.yml
 #  - .rubocop_todo.yml
