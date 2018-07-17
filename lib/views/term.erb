@@ -1,6 +1,6 @@
 <h1>Term</h1>
 
-<table class="memberships">
+<table class="table table-striped table-hover table-sm">
   <colgroup>
     <col class="person" span="<%= config.languages.size %>">
     <col class="party" span="<%= config.languages.size %>">
@@ -8,7 +8,7 @@
     <col class="dates" span="2">
     <col class="facebook" span="1">
   </colgroup>
-  <thead>
+  <thead class="thead-light">
   <tr>
     <th scope="col" colspan="<%= config.languages.size %>">Person</th>
     <th scope="col" colspan="<%= config.languages.size %>">Party</th>
@@ -54,4 +54,4 @@
   <% end %>
 
   </tbody>
-  </table>
+</table>

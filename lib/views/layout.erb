@@ -1,32 +1,28 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Country</title>
-  <style type="text/css">
-    body {
-      font-family: sans-serif;
-    }
-      table.memberships {
-        border-collapse: collapse;
-        border: 1px solid #ddd;
-      }
-      table.memberships td {
-        border: 1px solid #ddd;
-        padding: 5px;
-      }
-    table.memberships .party, table.memberships .dates {
-      background-color: #d7d9f2;
-    }
-  </style>
-</head>
-<body>
-<header>
-  Commons Explorer
-</header>
-<article>
-  <%= yield %>
-</article>
+<!doctype html>
+<html lang="en">
+  <head>
 
-</body>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+
+    <script defer src="https://use.fontawesome.com/releases/v5.1.0/js/all.js" integrity="sha384-3LK/3kTpDE/Pkp8gTNp2gR/2gOiwQ6QaO7Td0zV76UFJVhqLl4Vl3KL1We6q6wR9" crossorigin="anonymous"></script>
+
+    <title>Commons Explorer</title>
+
+  </head>
+  <body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="/"><i class="far fa-compass"></i> Commons Explorer</a>
+    </nav>
+
+    <main role="main" class="container mt-3">
+
+      <%= yield %>
+
+    </main>
+
+  </body>
 </html>
