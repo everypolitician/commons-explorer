@@ -48,7 +48,8 @@ get '/country/:country' do
   config = config_for_country params[:country]
   executives = Executive.list(config).map do |executive|
     {
-      url:   "/executive/#{params['country']}/#{executive.executive_item_id}&position_ids=#{executive.positions_item_ids.join(',')}",
+      url:   "/executive/#{params['country']}/"\
+             "#{executive.executive_item_id}&position_ids=#{executive.positions_item_ids.join(',')}",
       label: executive.comment,
     }
   end
