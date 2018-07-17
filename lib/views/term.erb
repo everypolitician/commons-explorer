@@ -1,57 +1,59 @@
-<h1>Term</h1>
+<h2>Term</h2>
 
-<table class="memberships">
-  <colgroup>
-    <col class="person" span="<%= config.languages.size %>">
-    <col class="party" span="<%= config.languages.size %>">
-    <col class="role" span="<%= config.languages.size %>">
-    <col class="dates" span="2">
-    <col class="facebook" span="1">
-  </colgroup>
-  <thead>
-  <tr>
-    <th scope="col" colspan="<%= config.languages.size %>">Person</th>
-    <th scope="col" colspan="<%= config.languages.size %>">Party</th>
-    <th scope="col" colspan="<%= config.languages.size %>">Role</th>
-    <th scope="col" rowspan="2">Start</th>
-    <th scope="col" rowspan="2">End</th>
-    <th scope="col" rowspan="2">Facebook</th>
-  </tr>
-  <tr>
-    <% config.languages.each do |language| %>
-      <th><%= language %></th>
-    <% end %>
-    <% config.languages.each do |language| %>
-      <th><%= language %></th>
-    <% end %>
-    <% config.languages.each do |language| %>
-      <th><%= language %></th>
-    <% end %>
-  </tr>
-  </thead>
-  <tbody>
-  <% memberships.each do |membership| %>
+<div class="table-responsive">
+  <table class="table table-striped table-hover table-sm">
+    <colgroup>
+      <col class="person" span="<%= config.languages.size %>">
+      <col class="party" span="<%= config.languages.size %>">
+      <col class="role" span="<%= config.languages.size %>">
+      <col class="dates" span="2">
+      <col class="facebook" span="1">
+    </colgroup>
+    <thead class="thead-light">
+    <tr>
+      <th scope="col" colspan="<%= config.languages.size %>">Person</th>
+      <th scope="col" colspan="<%= config.languages.size %>">Party</th>
+      <th scope="col" colspan="<%= config.languages.size %>">Role</th>
+      <th scope="col" rowspan="2">Start</th>
+      <th scope="col" rowspan="2">End</th>
+      <th scope="col" rowspan="2">Facebook</th>
+    </tr>
     <tr>
       <% config.languages.each do |language| %>
-        <td><%= membership[:person][:name][:"lang:#{language}"] rescue '' %></td>
+        <th><%= language %></th>
       <% end %>
       <% config.languages.each do |language| %>
-        <td><%= membership[:on_behalf_of][:name][:"lang:#{language}"] rescue '' %></td>
+        <th><%= language %></th>
       <% end %>
       <% config.languages.each do |language| %>
-        <td><%= membership[:role][:"lang:#{language}"] rescue '' %></td>
+        <th><%= language %></th>
       <% end %>
-      <td><%= membership[:start_date] %></td>
-      <td><%= membership[:end_date] %></td>
-      <td>
-        <% if membership[:person] %>
-          <% membership[:person][:links].each do |link| %>
-            <a href="<%= link[:url] %>"><%= link[:url] %></a>
-          <% end %>
-        <% end %>
-      </td>
     </tr>
-  <% end %>
+    </thead>
+    <tbody>
+    <% memberships.each do |membership| %>
+      <tr>
+        <% config.languages.each do |language| %>
+          <td><%= membership[:person][:name][:"lang:#{language}"] rescue '' %></td>
+        <% end %>
+        <% config.languages.each do |language| %>
+          <td><%= membership[:on_behalf_of][:name][:"lang:#{language}"] rescue '' %></td>
+        <% end %>
+        <% config.languages.each do |language| %>
+          <td><%= membership[:role][:"lang:#{language}"] rescue '' %></td>
+        <% end %>
+        <td><%= membership[:start_date] %></td>
+        <td><%= membership[:end_date] %></td>
+        <td>
+          <% if membership[:person] %>
+            <% membership[:person][:links].each do |link| %>
+              <a href="<%= link[:url] %>"><%= link[:url] %></a>
+            <% end %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
 
-  </tbody>
+    </tbody>
   </table>
+</div>

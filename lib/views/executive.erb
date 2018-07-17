@@ -1,4 +1,4 @@
-<h1>Executive</h1>
+<h2>Executives</h2>
 <ul>
     <% executive.terms.each do |term| %>
     <li><a href="/term/<%= config.country_wikidata_id %>/<%= legislature.house_item_id %>/<%= term.term_item_id %>/<%= term.position_item_id || legislature.position_item_id %>?languages=<%= config.languages.join(',') %>"><%= term.comment %></a></li>
