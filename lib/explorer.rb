@@ -91,12 +91,19 @@ end
 
 get '/executive/:country/:executive' do
   config = config_for_country params[:country]
-  executive = Executive.new executive_item_id: params['executive'], positions: params['position_ids'].split(',').map { |id| {position_item_id: id, branch: nil, comment: nil} }
+
+  executive = Executive.new(
+    executive_item_id: params['executive'],
+    positions:         params['position_ids'].split(',').map do |id|
+      { position_item_id: id, branch: nil, comment: nil }
+    end
+  )
+
   wikidata_client = WikidataClient.new
   wikidata_labels = WikidataLabels.new(config: config, wikidata_client: wikidata_client)
   membership_rows = query_wikidata(executive.terms[0].query(config), config)
   membership_data = MembershipData.new(membership_rows, wikidata_labels, 'executive')
-  memberships = membership_data.memberships
+  # memberships = membership_data.memberships
 
   persons = membership_data.persons.map { |p| [p[:id], p] }.to_h
   organizations = membership_data.organizations.map { |o| [o[:id], o] }.to_h
@@ -121,8 +128,17 @@ end
 get '/term/:country/:legislature/:term/:position' do
   config = config_for_country params[:country]
 
-  legislature = Legislature.new house_item_id: params['legislature'], terms: [], position_item_id: params['position']
-  term = LegislativeTerm.new legislature: legislature, term_item_id: params['term'], position_item_id: params['position']
+  legislature = Legislature.new(
+    house_item_id:    params['legislature'],
+    terms:            [],
+    position_item_id: params['position']
+  )
+
+  term = LegislativeTerm.new(
+    legislature:      legislature,
+    term_item_id:     params['term'],
+    position_item_id: params['position']
+  )
 
   wikidata_client = WikidataClient.new
   wikidata_labels = WikidataLabels.new(config: config, wikidata_client: wikidata_client)
