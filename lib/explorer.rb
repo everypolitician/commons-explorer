@@ -9,7 +9,7 @@ def query_wikidata(sparql_query, config)
   wikidata_client = WikidataClient.new
   wikidata_results_parser = WikidataResultsParser.new(languages: config.languages)
   query = Query.new(
-    sparql_query: sparql_query,
+    sparql_query:  sparql_query,
     output_dir_pn: Pathname.new(''),
   )
   results = query.run(wikidata_client: wikidata_client,
@@ -29,7 +29,8 @@ get '/' do
   data = JSON.parse(response, symbolize_names: true)
   countries = data.flat_map do |repo|
     if repo[:topics].include? 'commons-data'
-      config = JSON.parse(RestClient.get("https://raw.githubusercontent.com/#{repo[:full_name]}/master/config.json"), symbolize_names: true)
+      config = JSON.parse(RestClient.get("https://raw.githubusercontent.com/#{repo[:full_name]}/master/config.json"),
+                          symbolize_names: true)
       [{
         url: "/country/#{repo[:name]}",
         label: repo[:full_name],
@@ -45,18 +46,18 @@ get '/country/:country' do
   config = config_for_country params[:country]
   executives = Executive.list(config).map do |executive|
     {
-      url: "/executive/#{params['country']}/#{executive.executive_item_id}&position_ids=#{executive.positions_item_ids.join(',')}",
+      url:   "/executive/#{params['country']}/#{executive.executive_item_id}&position_ids=#{executive.positions_item_ids.join(',')}",
       label: executive.comment,
     }
   end
   legislatures = Legislature.list(config).map do |legislature|
     {
-      url: "/legislature/#{params['country']}/#{legislature.house_item_id}/#{legislature.position_item_id}",
+      url:   "/legislature/#{params['country']}/#{legislature.house_item_id}/#{legislature.position_item_id}",
       label: legislature.comment,
     }
   end
   erb :country, locals: {
-    executives: executives,
+    executives:   executives,
     legislatures: legislatures,
   }
 end
@@ -68,8 +69,8 @@ get '/legislature/:country/:legislature/:position' do
   term_rows = Legislature.terms_from_wikidata config, false, [legislature_row]
   terms = term_rows.map do |term_row|
     term = {
-        term_item_id: term_row[:term].value,
-        comment:      term_row[:termLabel].value,
+      term_item_id: term_row[:term].value,
+      comment:      term_row[:termLabel].value,
     }
     term[:start_date] = term_row[:termStart].value if term_row[:termStart]
     term[:end_date] = term_row[:termEnd].value if term_row[:termEnd]
@@ -78,9 +79,9 @@ get '/legislature/:country/:legislature/:position' do
   end
   legislature = Legislature.new house_item_id: params['legislature'], terms: terms, position_item_id: params['position']
   erb :legislature, locals: {
-      params: params,
-      config: config,
-      legislature: legislature,
+    params:      params,
+    config:      config,
+    legislature: legislature,
   }
 end
 
@@ -105,10 +106,10 @@ get '/executive/:country/:executive' do
   # memberships.each { |m| m['area'] = areas[m['area_id'] ] }
 
   erb :term, locals: {
-    config: config,
-    executive: executive,
-    memberships: memberships,
-    persons: persons,
+    config:        config,
+    executive:     executive,
+    memberships:   memberships,
+    persons:       persons,
     organizations: organizations,
   }
 end
@@ -145,12 +146,12 @@ get '/term/:country/:legislature/:term/:position' do
   puts JSON.dump(persons)
 
   erb :term, locals: {
-    config: config,
-    term: term,
-    persons: persons,
+    config:        config,
+    term:          term,
+    persons:       persons,
     organizations: organizations,
-    memberships: memberships,
+    memberships:   memberships,
     # areas: areas,
   }
-
 end
+
