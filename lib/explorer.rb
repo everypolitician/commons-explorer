@@ -23,24 +23,30 @@ def config_for_country(name)
   Config.new data
 end
 
-get '/' do
+def proto_commons_repos
   response = RestClient.get('https://api.github.com/users/everypolitician/repos?per_page=1000',
                             'Accept' => 'application/vnd.github.mercy-preview+json')
-  data = JSON.parse(response, symbolize_names: true)
-  countries = data.flat_map do |repo|
+  JSON.parse(response, symbolize_names: true)
+end
+
+def countries_from_repos(repos)
+  repos.flat_map do |repo|
     if repo[:topics].include? 'commons-data'
       # config = JSON.parse(RestClient.get("https://raw.githubusercontent.com/#{repo[:full_name]}/master/config.json"),
       #                     symbolize_names: true)
-      [
-        {
-          url:   "/country/#{repo[:name]}",
-          label: repo[:full_name],
-        },
-      ]
+      [{
+        url:   "/country/#{repo[:name]}",
+        label: repo[:full_name],
+      },]
     else
       []
     end
   end
+end
+
+get '/' do
+  data = proto_commons_repos
+  countries = countries_from_repos(data)
   erb :index, locals: { 'countries': countries }
 end
 
