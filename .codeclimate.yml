@@ -1,0 +1,9 @@
+plugins:
+  rubocop:
+    enabled: true
+    channel: rubocop-0-58
+
+prepare:
+  fetch:
+  - url: "https://raw.githubusercontent.com/everypolitician/everypolitician-data/master/.rubocop_base.yml"
+    path: ".rubocop-https---raw-githubusercontent-com-everypolitician-everypolitician-data-master--rubocop-base-yml"
