@@ -22,6 +22,14 @@ def config_for_country(name)
   Config.new data
 end
 
+def country_name(repo_name)
+  repo_name.
+    gsub('proto-commons-', '').
+    gsub('-', ' ').split(' ').
+    map(&:capitalize).
+    join(' ')
+end
+
 get '/' do
   response = RestClient.get('https://api.github.com/users/everypolitician/repos?per_page=1000',
                             'Accept' => 'application/vnd.github.mercy-preview+json')
@@ -31,7 +39,7 @@ get '/' do
       config = JSON.parse(RestClient.get("https://raw.githubusercontent.com/#{repo[:full_name]}/master/config.json"), symbolize_names: true)
       [{
           url: "/country/#{repo[:name]}",
-          label: repo[:full_name],
+          label: country_name(repo[:name]),
        }]
     else
       []
