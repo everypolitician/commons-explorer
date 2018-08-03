@@ -1,4 +1,8 @@
 <h1>Term</h1>
+<% if term && term.legislature && term.legislature.number_of_seats %>
+  <%= memberships.count %> memberships for this term
+  (Seat count for legislature is <%= term.legislature.number_of_seats %>)
+<% end %>
 
 <table class="table table-striped table-hover table-sm">
   <colgroup>

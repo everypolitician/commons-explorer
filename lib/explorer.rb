@@ -50,7 +50,7 @@ get '/country/:country' do
   end
   legislatures = Legislature.list(config).map do |legislature|
     {
-        url: "/legislature/#{params['country']}/#{legislature.house_item_id}/#{legislature.position_item_id}",
+        url: "/legislature/#{params['country']}/#{legislature.house_item_id}/#{legislature.position_item_id}?number_of_seats=#{legislature.number_of_seats}",
         label: legislature.comment,
     }
   end
@@ -75,7 +75,10 @@ get '/legislature/:country/:legislature/:position' do
     term[:position_item_id] = term_row[:termSpecificPosition].value if term_row[:termSpecificPosition]
     term
   end
-  legislature = Legislature.new house_item_id: params['legislature'], terms: terms, position_item_id: params['position']
+  legislature = Legislature.new house_item_id: params['legislature'],
+                                terms: terms,
+                                position_item_id: params['position'],
+                                number_of_seats: params['number_of_seats']
   erb :legislature, locals: {
       'params' => params,
       'config' => config,
@@ -109,13 +112,17 @@ get '/executive/:country/:executive' do
       'memberships' => memberships,
       'persons' => persons,
       'organizations' => organizations,
+      'term' => nil
   }
 end
 
 get '/term/:country/:legislature/:term/:position' do
   config = config_for_country params[:country]
 
-  legislature = Legislature.new house_item_id: params['legislature'], terms: [], position_item_id: params['position']
+  legislature = Legislature.new house_item_id: params['legislature'],
+                                terms: [],
+                                position_item_id: params['position'],
+                                number_of_seats: params['number_of_seats']
   term = LegislativeTerm.new legislature: legislature, term_item_id: params['term'], position_item_id: params['position']
 
   wikidata_client = WikidataClient.new
