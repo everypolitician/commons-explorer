@@ -1,7 +1,9 @@
 <h1>Countries</h1>
 
-<ul>
-  <% countries.each do |country| %>
-    <li><a href="<%= country[:url] %>"><%= country[:label] %></a></li>
-  <% end %>
-</ul>
+<div style="column-count:3;column-rule:1px solid #c4c4c4">
+  <ul>
+    <% countries.each do |country| %>
+      <li><a href="<%= country[:url] %>"><%= country[:label] %></a></li>
+    <% end %>
+  </ul>
+</div>
